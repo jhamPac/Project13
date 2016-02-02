@@ -19,8 +19,6 @@ class ActionViewController: UIViewController
     {
         super.viewDidLoad()
         
-        beAnObserver()
-        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "done")
         
         if let inputItem = extensionContext!.inputItems.first as? NSExtensionItem
@@ -48,6 +46,18 @@ class ActionViewController: UIViewController
             }
         }
     }
+    
+    override func viewWillAppear(animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        beAnObserver()
+    }
+    
+    override func viewWillDisappear(animated: Bool)
+    {
+        super.viewWillDisappear(animated)
+        stopAnObserver()
+    }
 
     @IBAction func done()
     {
@@ -67,6 +77,13 @@ class ActionViewController: UIViewController
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: "adjustForKeyboard:", name: UIKeyboardWillHideNotification, object: nil)
         notificationCenter.addObserver(self, selector: "adjustForKeyboard:", name: UIKeyboardWillChangeFrameNotification, object: nil)
+    }
+    
+    func stopAnObserver()
+    {
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+        notificationCenter.removeObserver(self, name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
     
     func adjustForKeyboard(notification: NSNotification)
